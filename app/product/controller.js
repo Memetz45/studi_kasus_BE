@@ -172,7 +172,7 @@ const index = async (req, res, next) => {
         }
 
         if(category.length){
-            let categoryResult = await Category.findOne({name: {$regex: `${category}`}, $options: 'i'});
+            let categoryResult = await Category.findOne({name: {$regex: `${category}`, $options: 'i'}});
 
             if(categoryResult){
                 criteria = {...criteria, category: categoryResult._id}
@@ -186,14 +186,18 @@ const index = async (req, res, next) => {
                 criteria = {...criteria, tags: {$in: tagsResult.map(tag => tag._id)}}
             }
         }
+
+        
+        let count = await Product.find().countDocuments();
+        
         console.log(criteria);
         let product = await Product
-        .find()
+        .find(criteria)
         .skip(parseInt(skip))
         .limit(parseInt(limit))
         .populate('category')
         .populate('tags');
-        return res.json(product);
+        return res.json({data: product, count});
     }catch(err) {
         next(err);
     }
