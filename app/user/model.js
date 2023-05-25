@@ -42,7 +42,7 @@ userSchema.path('email').validate(async function(value){
     }catch(err){
         throw err
     }
-}, atr => `${attr.value} sudah terdaftar`);
+}, attr => `${attr.value} sudah terdaftar`);
 
 const HASH_ROUND = 10;
 userSchema.pre('save', function(next){
