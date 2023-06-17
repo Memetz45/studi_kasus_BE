@@ -11,7 +11,7 @@ let userSchema = Schema({
         maxlength: [255, ' Panjang harus antara 3 - 255 karakter'],
         minlength: [3,'Panjang harus antara 3 - 255 karakter']
     },
-    eamil: {
+    email: {
         type: String,
         required: [true, 'email harus diisi'],
         maxlength: [255, 'Panjang email maksimal 255 karakter']
