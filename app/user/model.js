@@ -27,7 +27,7 @@ let userSchema = Schema({
         default: 'user'
     },
     token: [String]
-}, {timestamp: true});
+}, {timestamps: true});
 
 userSchema.path('email').validate(function(value){
     const EMAIL_RE = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
@@ -37,7 +37,7 @@ userSchema.path('email').validate(function(value){
 userSchema.path('email').validate(async function(value){
 
     try{
-        const count = await this.model('User').count({eamil: value});
+        const count = await this.model('User').count({email: value});
         return !count;
     }catch(err){
         throw err
@@ -50,6 +50,6 @@ userSchema.pre('save', function(next){
     next()
 });
 
-userSchema.plugin(AutoIncrement, {inc_field: 'customer_id'});
+userSchema.plugin(AutoIncrement, {inc_field: 'customer_id', disable_hooks: true});
 
 module.exports = model('User', userSchema);

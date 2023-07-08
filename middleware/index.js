@@ -21,7 +21,7 @@ function decodeToken() {
                     message: 'Token Expired'
                 });
             }
-        } catch {
+        } catch(err) {
             if(err && err.name === 'JsonWebTokenError') {
                 return res.json({
                     error: 1,

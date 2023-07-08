@@ -18,7 +18,7 @@ const register = async (req, res, next) => {
                 mesage: err.message,
                 fields: err.errors
             });
-        }
+       }
         next(err);
     }
 }
@@ -79,6 +79,7 @@ const me = (req, res, next) => {
     }
     res.json(req.user);
 }
+// get me gagal "invalid token"
 module.exports = {
     register,
     localStrategy,
