@@ -8,10 +8,10 @@ router.post(
     deliveryAddressController.store
 );
 
-// router.put('/delivery-addresses/:id', deliveryAddressController.update);
-// router.delete('/delivery-addresses/:id', deliveryAddressController.destroy);
+router.put('/delivery-addresses/:id', deliveryAddressController.update);
+router.delete('/delivery-addresses/:id', deliveryAddressController.destroy);
 
-// router.get('/delivery-addresses/:id', 
-// police_check('view', 'DeliveryAddress'),
-// deliveryAddressController.index);
+router.get('/delivery-addresses/:id', 
+police_check('view', 'DeliveryAddress'),
+deliveryAddressController.index);
 module.exports = router;

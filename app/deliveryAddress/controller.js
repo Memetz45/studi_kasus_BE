@@ -1,4 +1,6 @@
+const { subject } = require('@casl/ability');
 const DeliveryAddress = require ('./model');
+const { policyfor } = require('../../utils');
 
 const store = async (req, res, next) => {
     try {
@@ -19,8 +21,88 @@ const store = async (req, res, next) => {
     }
 }
 
+const update = async(req, res, next) => {
+    try{
+        let {_id, ...payload} = req.body;
+        let {id} = req.params;
+        let address = await DeliveryAddress.findById(id);
+        let subjectAddress = subject('DeliveryAddress', {...address, user_id: address.user});
+        let policy = policyfor(req.user);
+        if(!policy.can('update', subjectAddress)) {
+            return res.json({
+                error: 1,
+                message: `You're not allowed to modify this resource`
+            });
+        }
+        address = await DeliveryAddress.findByIdAndUpdate(id, payload, {new: true});
+        res.json(address);
+    }catch (err) {
+        if(err && err.name == 'ValidationError'){
+            return res.json({
+                error: 1,
+                message: err.message,
+                fields: err.errors
+            });
+        }
+        next(err);
+    }
+}
+
+const destroy = async (req, res, next) => {
+    try{
+        let{id} = req.params;
+        let address = await DeliveryAddress.findById(id);
+        let subjectAddress = subject('DeliveryAddress', {...address, user_id: address.user});
+        let policy = policyfor(req.user);
+        if(!policy.can('delete', subjectAddress)) {
+            return res.json({
+                error: 1,
+                message: `You're not allowed to delete this resource`
+            });
+        }
+        address = await DeliveryAddress.findByIdAndUpdate(id);
+        res.json(address);
+    }catch (err) {
+        if(err && err.name == 'ValidationError'){
+            return res.json({
+                error: 1,
+                message: err.message,
+                fields: err.errors
+            });
+        }
+        next(err);
+    }
+}
+
+const index = async(req, res, next) => {
+    try{
+        let {skip = 0, limit = 10} = req.query;
+        let count = await DeliveryAddress.find({user: req.user._id}).countDocuments();
+        let address =
+          await DeliveryAddress
+          .find({user: req.user._id})
+          .skip(parseInt(skip))
+          .limit(parseInt(limit))
+          .sort('-createdAt');
+
+          return res.json({data: address, count});
+    } catch (err) {
+        if(err && err.name == 'ValidationError'){
+            return res.json({
+                error: 1,
+                message: err.message,
+                fields: err.errors
+            });
+        }
+        next(err);
+    }
+}
+
 module.exports = {
-    store
+    store,
+    update,
+    destroy,
+    index
 }
 
 // untuk CRUD lainnya silahkan dilanjut 
