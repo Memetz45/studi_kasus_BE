@@ -1,6 +1,6 @@
 const CartItem = require('../cart-item/model');
 const DeliveryAddress = require('../deliveryAddress/model');
-const Order = require('../order/model');
+const Order = require('./model');
 const {Types} = require("mongoose");
 const OrderItem = require('../order-item/model');
 
@@ -54,5 +54,34 @@ const store = async(req, res, next) => {
     }
 }
 
-const index = async()
-// menit ke 15:18
+const index = async(req, res, next) => {
+    try{
+        let {skip = 0, limit = 10} = req.query;
+        let count = await Order.find({user: req._id}).countDocuments();
+        let orders = 
+          await Order
+          .find({user: req.user._id})
+          .skip(parseInt(skip))
+          .limit(parseInt(limit))
+          .populate('order_items')
+          .sort('-createdAt');
+        return res.json({
+            data: orders.map(order => order.toJSON({virtuals: true})),
+            count
+        })
+    }catch(err){
+        if(err && err.name == 'ValidationError'){
+            return res.json({
+                error:1,
+                message: err.message,
+                fields: err.errors,
+            });
+        }
+        next(err);
+    }
+}
+
+module.exports = {
+    store,
+    index
+}

@@ -11,6 +11,7 @@ const tagRoute = require ('./app/tag/router');
 const authRoute = require ('./app/auth/router');
 const deliveryAddressRoute = require('./app/deliveryAddress/router');
 const cartRoute = require('./app/cart/router');
+const orderRoute = require('./app/order/router')
 
 var app = express();
 
@@ -25,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(decodeToken());
+app.use(decodeToken());
 
 app.use('/public', express.static(path.join(__dirname, 'public/images/products')));
 app.use('/auth', authRoute);
@@ -34,6 +35,7 @@ app.use('/api', categoryRoute);
 app.use('/api', tagRoute);
 app.use('/api', deliveryAddressRoute);
 app.use('/api', cartRoute);
+app.use('/api', orderRoute);
 
 // home
 // app.use('/', function(req, res){
