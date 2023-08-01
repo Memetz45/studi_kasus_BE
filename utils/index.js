@@ -32,7 +32,7 @@ const policies = {
     }
 }
 
-const policyfor = user => {
+const policyFor = user => {
     let builder = new AbilityBuilder();
     if(user && typeof policies[user.role] === 'function') {
         policies[user.role](user, builder);
@@ -44,5 +44,5 @@ const policyfor = user => {
 
 module.exports = {
     getToken,
-    policyfor
+    policyFor
 }
